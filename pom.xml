@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>im-common</module>
+        <module>im-server</module>
     </modules>
     <properties>
         <java.version>17</java.version>
