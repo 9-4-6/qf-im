@@ -1,3 +1,5 @@
 spring:
   application:
     name: im-server
+server:
+  port: 8081
