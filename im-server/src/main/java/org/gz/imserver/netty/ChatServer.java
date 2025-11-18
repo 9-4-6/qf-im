@@ -12,8 +12,7 @@ import org.gz.imserver.codec.MessageDecoder;
 import org.gz.imserver.codec.MessageEncoder;
 import org.gz.imserver.handler.HeartBeatHandler;
 import org.gz.imserver.handler.NettyServerHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.concurrent.TimeUnit;
 
