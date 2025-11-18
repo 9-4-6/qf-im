@@ -1,4 +1,4 @@
-package org.gz.imcommon.config;
+package org.gz.imserver.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

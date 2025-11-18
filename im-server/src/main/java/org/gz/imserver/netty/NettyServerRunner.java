@@ -2,7 +2,7 @@ package org.gz.imserver.netty;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.gz.imcommon.config.NettyConfig;
+import org.gz.imserver.config.NettyConfig;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

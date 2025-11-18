@@ -7,9 +7,10 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.gz.imcommon.config.NettyConfig;
+import org.gz.imcommon.exception.BizException;
 import org.gz.imserver.codec.MessageDecoder;
 import org.gz.imserver.codec.MessageEncoder;
+import org.gz.imserver.config.NettyConfig;
 import org.gz.imserver.handler.HeartBeatHandler;
 import org.gz.imserver.handler.NettyServerHandler;
 
@@ -109,7 +110,7 @@ public class ChatServer {
     private void validateConfig() {
         int port = nettyConfig.getTcpPort();
         if (port < 1 || port > 65535) {
-            throw new IllegalArgumentException("无效的 Netty 端口：" + port);
+            throw new BizException("无效的 Netty 端口：" + port);
         }
     }
 

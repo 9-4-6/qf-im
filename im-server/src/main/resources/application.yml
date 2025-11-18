@@ -1,5 +1,14 @@
 spring:
   application:
     name: im-server
-server:
-  port: 8081
+  config:
+    import: optional:nacos:im-server.yml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.0.107:8848
+        namespace: 16ca64e6-6fa9-42c7-92bb-1fed442b17de
+      config:
+        server-addr: 192.168.0.107:8848
+        file-extension: yml
+        namespace: 16ca64e6-6fa9-42c7-92bb-1fed442b17de
