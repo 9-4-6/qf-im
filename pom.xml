@@ -17,11 +17,11 @@
         <java.version>17</java.version>
         <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
         <spring.boot.version>3.3.13</spring.boot.version>
-        <knife4j.version>4.5.0</knife4j.version>
+        <redisson.version>3.52.0</redisson.version>
         <hutool.version>5.8.28</hutool.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <lombok.version>1.18.36</lombok.version>
-        <mybatisplus.version>3.5.7</mybatisplus.version>
+        <mybatisplus.version>3.5.8</mybatisplus.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -46,8 +46,13 @@
                 <version>${lombok.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatisplus.version}</version>
             </dependency>
             <dependency>
