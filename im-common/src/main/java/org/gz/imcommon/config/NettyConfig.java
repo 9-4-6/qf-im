@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "netty.server")
-public class TcpConfig {
+public class NettyConfig {
     // tcp 绑定的端口号
     private Integer tcpPort;
     // boss线程 默认=1
