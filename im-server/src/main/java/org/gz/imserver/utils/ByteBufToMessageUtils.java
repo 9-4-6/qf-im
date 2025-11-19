@@ -26,7 +26,6 @@ public class ByteBufToMessageUtils {
 
         // command
         int command = in.readInt();
-
         // version
         int version = in.readInt();
 
@@ -39,18 +38,19 @@ public class ByteBufToMessageUtils {
         // appId 应用id
         int appId = in.readInt();
 
-        // imeiLength 设备唯一值长度
-        int imeiLength = in.readInt();
+        // deviceIdLength 设备唯一标识长度
+        int deviceIdLength = in.readInt();
 
         // bodyLen 消息体长度
         int bodyLen = in.readInt();
-
-        if(in.readableBytes() < bodyLen + imeiLength){
+        //为了防止半包问题
+        if(in.readableBytes() < bodyLen + deviceIdLength){
+            //长度不够，等等下一次读取
             in.resetReaderIndex();
             return null;
         }
 
-        byte [] imeiData = new byte[imeiLength];
+        byte [] imeiData = new byte[deviceIdLength];
         in.readBytes(imeiData);
         String imei = new String(imeiData);
 
@@ -75,7 +75,7 @@ public class ByteBufToMessageUtils {
             JSONObject parse =JSONUtil.parseObj(body);
             message.setMessagePack(parse);
         }
-
+        //标记读取位置
         in.markReaderIndex();
         return message;
     }

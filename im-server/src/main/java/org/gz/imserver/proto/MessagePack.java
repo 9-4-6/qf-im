@@ -30,9 +30,9 @@ public class MessagePack<T> implements Serializable {
     private String messageId;
 
     /**
-     * 客户端设备唯一标识
+     * 设备唯一标识
      */
-    private String imei;
+    private String deviceId;
 
     private Integer command;
 
