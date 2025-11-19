@@ -9,7 +9,6 @@ import lombok.Data;
  */
 @Data
 public class MessageHeader {
-    //消息操作指令 十六进制 一个消息的开始通常以0x开头
     //4字节
     private Integer command;
     //4字节 版本号
@@ -18,8 +17,8 @@ public class MessageHeader {
     private Integer clientType;
     // 应用ID   4字节 appId
     private Integer appId;
-    //数据解析类型 0x0
-    private Integer messageType = 0x0;
+    //数据解析类型 0 代表json 用于后面扩展
+    private Integer messageType = 0;
     //4字节 设备唯一标识长度
     private Integer deviceIdLength;
 

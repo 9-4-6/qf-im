@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 public class MessagePack<T> implements Serializable {
 
-    private String userId;
+    private Long userId;
 
     private Integer appId;
 

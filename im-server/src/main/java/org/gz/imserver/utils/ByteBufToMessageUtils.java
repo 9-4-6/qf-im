@@ -70,7 +70,7 @@ public class ByteBufToMessageUtils {
         Message message = new Message();
         message.setMessageHeader(messageHeader);
 
-        if(messageType == 0x0){
+        if(messageType == 0){
             String body = new String(bodyData);
             JSONObject parse =JSONUtil.parseObj(body);
             message.setMessagePack(parse);

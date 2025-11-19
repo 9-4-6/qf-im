@@ -1,11 +1,20 @@
 package org.gz.imserver.handler;
 
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.gz.imcommon.enums.MessageCommandEnum;
+import org.gz.imcommon.enums.SystemCommandEnum;
 import org.gz.imserver.proto.Message;
+import org.gz.imserver.proto.MessagePack;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -13,7 +22,8 @@ import org.gz.imserver.proto.Message;
  */
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
-
+    //todo 暂时存本地，后面修改
+    public static final Map<Long, Channel> userChannelMap = new ConcurrentHashMap<>();
 
     /**
      * 核心方法：处理客户端发送的消息（已解码为Message对象）
@@ -24,10 +34,27 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
         String clientAddress = ctx.channel().remoteAddress().toString();
         log.info("收到客户端[{}]的消息：{}", clientAddress, msg);
 
-        // 这里添加业务逻辑：例如根据msg中的指令处理请求、返回响应等
-        // 示例：获取消息头中的命令，进行对应处理
         int command = msg.getMessageHeader().getCommand();
-        log.debug("消息命令为：{}，开始处理业务逻辑", command);
+        log.info("消息命令为：{}，开始处理业务逻辑", command);
+        JSONObject jsonObject = JSONUtil.parseObj(msg.getMessagePack());
+        if(command == SystemCommandEnum.LOGIN.getCommand()){
+            //登录
+            Long userId = jsonObject.getLong("userId");
+            MessagePack<Long> loginSuccess = new MessagePack<>();
+            loginSuccess.setCommand(SystemCommandEnum.LOGIN_ACK.getCommand());
+            loginSuccess.setData(userId);
+            ctx.channel().writeAndFlush(loginSuccess);
+            userChannelMap.put(userId,ctx.channel());
+        }else if(command == MessageCommandEnum.MSG_P2P.getCommand()){
+            //单聊
+            //接收人
+            Long toId = jsonObject.getLong("toId");
+            //消息内容
+            Long centent = jsonObject.getLong("content");
+            Channel channel = userChannelMap.get(toId);
+            channel.writeAndFlush(centent);
+        }
+
     }
 
     /**
