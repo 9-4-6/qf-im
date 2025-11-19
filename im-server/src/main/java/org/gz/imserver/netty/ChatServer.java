@@ -7,11 +7,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.gz.imcommon.exception.BizException;
 import org.gz.imserver.codec.MessageDecoder;
 import org.gz.imserver.codec.MessageEncoder;
 import org.gz.imserver.config.NettyConfig;
 import org.gz.imserver.handler.NettyServerHandler;
+import org.gz.qfinfra.exception.BizException;
 
 
 import java.util.concurrent.TimeUnit;
