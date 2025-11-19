@@ -15,8 +15,8 @@ import org.gz.imserver.proto.MessageHeader;
  *               4位表示clientType
  *               4位表示messageType
  *               4位表示appId
- *               4位表示imei长度
- *               imei
+ *               4位表示deviceId长度
+ *               deviceId
  *               4位表示数据长度
  *               data
  */
