@@ -52,8 +52,9 @@ public class ChatServer {
                     .option(ChannelOption.SO_BACKLOG, 10240)
                     // 参数表示允许重复使用本地地址和端口
                     .option(ChannelOption.SO_REUSEADDR, true)
-                    //是否禁用Nagle算法
-                    .childOption(ChannelOption.TCP_NODELAY, false)
+                    // 是否禁用Nagle算法
+                    .childOption(ChannelOption.TCP_NODELAY, true)
+                    // TCP 保活机制的原理
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
