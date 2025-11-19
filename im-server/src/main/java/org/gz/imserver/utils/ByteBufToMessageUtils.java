@@ -30,7 +30,7 @@ public class ByteBufToMessageUtils {
         // version
         int version = in.readInt();
 
-        // clientType 客户端类型
+        // clientType 客户端类型(Android/iOS/PC/WEB)
         int clientType = in.readInt();
 
         // messageType 消息类型
