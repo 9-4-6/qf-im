@@ -11,7 +11,6 @@ import org.gz.imcommon.exception.BizException;
 import org.gz.imserver.codec.MessageDecoder;
 import org.gz.imserver.codec.MessageEncoder;
 import org.gz.imserver.config.NettyConfig;
-import org.gz.imserver.handler.HeartBeatHandler;
 import org.gz.imserver.handler.NettyServerHandler;
 
 
@@ -65,7 +64,6 @@ public class ChatServer {
                                     .addLast("idleHandler", new IdleStateHandler(
                                             nettyConfig.getHeartBeatTime(), 0, 0, TimeUnit.SECONDS
                                     ))
-                                    .addLast("heartBeatHandler", new HeartBeatHandler()) // 心跳处理器
                                     .addLast("businessHandler", new NettyServerHandler()); // 业务处理器
                         }
                     });
