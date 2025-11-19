@@ -3,9 +3,8 @@ package org.gz.imserver.proto;
 import lombok.Data;
 
 /**
- * @description:
- * @author: lld
- * @version: 1.0
+ * 消息
+ * @author 17853
  */
 @Data
 public class Message {

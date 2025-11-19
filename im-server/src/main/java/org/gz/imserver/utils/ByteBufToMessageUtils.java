@@ -7,7 +7,7 @@ import org.gz.imserver.proto.Message;
 import org.gz.imserver.proto.MessageHeader;
 
 /**
- * @author: Chackylee
+ * @author: guozhong
  * @description: 将ByteBuf转化为Message实体，根据私有协议转换
  *               私有协议规则，
  *               4位表示Command表示消息的开始，
@@ -19,32 +19,30 @@ import org.gz.imserver.proto.MessageHeader;
  *               imei
  *               4位表示数据长度
  *               data
- *               后续将解码方式加到数据头根据不同的解码方式解码，如pb，json，现在用json字符串
- * @version: 1.0
  */
 public class ByteBufToMessageUtils {
 
     public static Message transition(ByteBuf in){
 
-        /** 获取command*/
+        // command
         int command = in.readInt();
 
-        /** 获取version*/
+        // version
         int version = in.readInt();
 
-        /** 获取clientType*/
+        // clientType 客户端类型
         int clientType = in.readInt();
 
-        /** 获取clientType*/
+        // messageType 消息类型
         int messageType = in.readInt();
 
-        /** 获取appId*/
+        // appId 应用id
         int appId = in.readInt();
 
-        /** 获取imeiLength*/
+        // imeiLength 设备唯一值长度
         int imeiLength = in.readInt();
 
-        /** 获取bodyLen*/
+        // bodyLen 消息体长度
         int bodyLen = in.readInt();
 
         if(in.readableBytes() < bodyLen + imeiLength){

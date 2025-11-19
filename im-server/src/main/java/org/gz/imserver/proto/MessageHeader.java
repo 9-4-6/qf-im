@@ -5,6 +5,7 @@ import lombok.Data;
 /**
  * @author guozhong
  * @date 2025/11/18
+ * 消息头
  */
 @Data
 public class MessageHeader {
@@ -15,17 +16,10 @@ public class MessageHeader {
     private Integer version;
     //4字节 端类型
     private Integer clientType;
-    /**
-     * 应用ID
-     */
-//    4字节 appId
+    // 应用ID   4字节 appId
     private Integer appId;
-    /**
-     * 数据解析类型 和具体业务无关，后续根据解析类型解析data数据 0x0:Json,0x1:ProtoBuf,0x2:Xml,默认:0x0
-     */
-    //4字节 解析类型
+    //数据解析类型 和具体业务无关，后续根据解析类型解析data数据 0x0:Json,0x1:ProtoBuf,0x2:Xml,默认:0x0
     private Integer messageType = 0x0;
-
     //4字节 imel长度
     private Integer imeiLength;
 
