@@ -19,9 +19,7 @@ public class MessageDecoder extends ByteToMessageDecoder {
         if(in.readableBytes() < 28){
             return;
         }
-        //请求头（指令 版本 clientType 消息解析类型 appId imei长度 消息长度）
-        //imei号（设备唯一标识）
-        //请求体
+
         Message message = ByteBufToMessageUtils.transition(in);
         if(message == null){
             return;
