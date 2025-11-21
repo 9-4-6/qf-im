@@ -6,7 +6,6 @@ import cn.hutool.json.JSONUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.gz.imcommon.enums.MessageCommandEnum;
 import org.gz.imcommon.enums.SystemCommandEnum;

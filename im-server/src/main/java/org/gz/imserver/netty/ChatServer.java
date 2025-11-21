@@ -65,12 +65,7 @@ public class ChatServer {
                             // 对写大数据流的支持
                             pipeline.addLast("http-chunked", new ChunkedWriteHandler());
                             pipeline.addLast("aggregator", new HttpObjectAggregator(65535));
-                            /**
-                             * websocket 服务器处理的协议，用于指定给客户端连接访问的路由 : /ws
-                             * 本handler会帮你处理一些繁重的复杂的事
-                             * 会帮你处理握手动作： handshaking（close, ping, pong） ping + pong = 心跳
-                             */
-                            pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
+                            pipeline.addLast(new WebSocketServerProtocolHandler("/chat"));
                             pipeline.addLast(new WebSocketMessageDecoder());
                             pipeline.addLast(new WebSocketMessageEncoder());
                             pipeline.addLast(new NettyServerHandler());
