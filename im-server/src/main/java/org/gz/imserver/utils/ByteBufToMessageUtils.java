@@ -50,9 +50,9 @@ public class ByteBufToMessageUtils {
             return null;
         }
 
-        byte [] imeiData = new byte[deviceIdLength];
-        in.readBytes(imeiData);
-        String imei = new String(imeiData);
+        byte [] deviceIdData = new byte[deviceIdLength];
+        in.readBytes(deviceIdData);
+        String deviceId = new String(deviceIdData);
 
         byte [] bodyData = new byte[bodyLen];
         in.readBytes(bodyData);
@@ -65,7 +65,7 @@ public class ByteBufToMessageUtils {
         messageHeader.setLength(bodyLen);
         messageHeader.setVersion(version);
         messageHeader.setMessageType(messageType);
-        messageHeader.setImei(imei);
+        messageHeader.setDeviceId(deviceId);
 
         Message message = new Message();
         message.setMessageHeader(messageHeader);

@@ -25,6 +25,6 @@ public class MessageHeader {
     //4字节 包体长度
     private int length;
 
-    //imei号
-    private String imei;
+    //设备唯一id
+    private String deviceId;
 }
