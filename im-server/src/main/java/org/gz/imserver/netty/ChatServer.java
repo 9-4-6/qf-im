@@ -5,16 +5,16 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.gz.imserver.codec.MessageDecoder;
-import org.gz.imserver.codec.MessageEncoder;
+import org.gz.imserver.codec.WebSocketMessageDecoder;
+import org.gz.imserver.codec.WebSocketMessageEncoder;
 import org.gz.imserver.config.NettyConfig;
 import org.gz.imserver.handler.NettyServerHandler;
 import org.gz.qfinfra.exception.BizException;
-
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author guozhong
@@ -58,16 +58,25 @@ public class ChatServer {
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel ch) {
-                            ch.pipeline()
-                                    .addLast("decoder", new MessageDecoder()) // 自定义解码器
-                                    .addLast("encoder", new MessageEncoder()) // 自定义编码器
-                                    .addLast("idleHandler", new IdleStateHandler(
-                                            nettyConfig.getHeartBeatTime(), 0, 0, TimeUnit.SECONDS
-                                    ))
-                                    .addLast("businessHandler", new NettyServerHandler()); // 业务处理器
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            ChannelPipeline pipeline = ch.pipeline();
+                            // websocket 基于http协议，所以要有http编解码器
+                            pipeline.addLast("http-codec", new HttpServerCodec());
+                            // 对写大数据流的支持
+                            pipeline.addLast("http-chunked", new ChunkedWriteHandler());
+                            pipeline.addLast("aggregator", new HttpObjectAggregator(65535));
+                            /**
+                             * websocket 服务器处理的协议，用于指定给客户端连接访问的路由 : /ws
+                             * 本handler会帮你处理一些繁重的复杂的事
+                             * 会帮你处理握手动作： handshaking（close, ping, pong） ping + pong = 心跳
+                             */
+                            pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
+                            pipeline.addLast(new WebSocketMessageDecoder());
+                            pipeline.addLast(new WebSocketMessageEncoder());
+                            pipeline.addLast(new NettyServerHandler());
                         }
                     });
+
 
             // 绑定端口并同步等待
             ChannelFuture future = bootstrap.bind(nettyConfig.getTcpPort()).sync();

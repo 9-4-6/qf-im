@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
     //todo 暂时存本地，后面修改
-    public static final Map<Long, Channel> userChannelMap = new ConcurrentHashMap<>();
+    public static final Map<Long, Channel> USER_CHANNEL_MAP = new ConcurrentHashMap<>();
 
     /**
      * 核心方法：处理客户端发送的消息（已解码为Message对象）
@@ -44,15 +44,15 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             loginSuccess.setCommand(SystemCommandEnum.LOGIN_ACK.getCommand());
             loginSuccess.setData(userId);
             ctx.channel().writeAndFlush(loginSuccess);
-            userChannelMap.put(userId,ctx.channel());
+            USER_CHANNEL_MAP.put(userId,ctx.channel());
         }else if(command == MessageCommandEnum.MSG_P2P.getCommand()){
             //单聊
             //接收人
             Long toId = jsonObject.getLong("toId");
             //消息内容
-            Long centent = jsonObject.getLong("content");
-            Channel channel = userChannelMap.get(toId);
-            channel.writeAndFlush(centent);
+            Long content = jsonObject.getLong("content");
+            Channel channel = USER_CHANNEL_MAP.get(toId);
+            channel.writeAndFlush(content);
         }
 
     }
@@ -62,28 +62,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        // 判断事件类型是否为空闲事件（由IdleStateHandler触发）
-        if (evt instanceof IdleStateEvent idleEvent) {
-            String clientAddress = ctx.channel().remoteAddress().toString();
 
-            // 根据空闲类型打印日志（读空闲/写空闲/读写空闲）
-            switch (idleEvent.state()) {
-                case READER_IDLE:
-                    log.warn("客户端[{}]触发读空闲事件（长时间未发送消息）", clientAddress);
-                    // 业务处理：例如关闭连接、发送心跳检测请求等
-                    ctx.close(); // 示例：关闭空闲连接
-                    break;
-                case WRITER_IDLE:
-                    log.info("客户端[{}]触发写空闲事件（长时间未接收消息）", clientAddress);
-                    break;
-                case ALL_IDLE:
-                    log.info("客户端[{}]触发读写空闲事件", clientAddress);
-                    break;
-            }
-        } else {
-            // 非空闲事件，交给父类处理（默认不做任何操作）
-            super.userEventTriggered(ctx, evt);
-        }
     }
 
     /**
@@ -98,7 +77,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
 
         // 异常处理策略：根据异常类型决定是否关闭连接
         // 示例：网络异常直接关闭，业务异常可返回错误响应后关闭
-        ctx.close(); // 通常建议关闭异常连接，避免资源泄漏
+        ctx.close();
     }
 
     // 补充：常用的其他生命周期方法（可选重写）
