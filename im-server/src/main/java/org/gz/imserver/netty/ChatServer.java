@@ -64,6 +64,7 @@ public class ChatServer {
                             pipeline.addLast("http-codec", new HttpServerCodec());
                             // 对写大数据流的支持
                             pipeline.addLast("http-chunked", new ChunkedWriteHandler());
+                            //聚合
                             pipeline.addLast("aggregator", new HttpObjectAggregator(65535));
                             pipeline.addLast(new WebSocketServerProtocolHandler("/chat"));
                             pipeline.addLast(new WebSocketMessageDecoder());
