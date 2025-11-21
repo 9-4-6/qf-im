@@ -11,9 +11,7 @@ import org.gz.imcommon.enums.MessageCommandEnum;
 import org.gz.imcommon.enums.SystemCommandEnum;
 import org.gz.imserver.proto.Message;
 import org.gz.imserver.proto.MessagePack;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.gz.imserver.utils.SessionSocketHolder;
 
 
 /**
@@ -21,8 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
-    //todo 暂时存本地，后面修改
-    public static final Map<Long, Channel> USER_CHANNEL_MAP = new ConcurrentHashMap<>();
+
 
     /**
      * 核心方法：处理客户端发送的消息（已解码为Message对象）
@@ -43,14 +40,14 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             loginSuccess.setCommand(SystemCommandEnum.LOGIN_ACK.getCommand());
             loginSuccess.setData(userId);
             ctx.channel().writeAndFlush(loginSuccess);
-            USER_CHANNEL_MAP.put(userId,ctx.channel());
+            SessionSocketHolder.put(userId,ctx.channel());
         }else if(command == MessageCommandEnum.MSG_P2P.getCommand()){
             //单聊
             //接收人
             Long toId = jsonObject.getLong("toId");
             //消息内容
             Long content = jsonObject.getLong("content");
-            Channel channel = USER_CHANNEL_MAP.get(toId);
+            Channel channel = SessionSocketHolder.get(toId);
             channel.writeAndFlush(content);
         }
 
