@@ -1,4 +1,4 @@
-package org.gz.imserver.utils;
+package org.gz.imserver.netty;
 
 import io.netty.channel.Channel;
 

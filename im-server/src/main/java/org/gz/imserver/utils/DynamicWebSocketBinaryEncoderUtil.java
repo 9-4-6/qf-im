@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class DynamicWebSocketBinaryEncoder {
+public class DynamicWebSocketBinaryEncoderUtil {
     // Jackson JSON序列化器（线程安全，全局单例）
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -94,7 +94,7 @@ public class DynamicWebSocketBinaryEncoder {
             bodyMap.put("toId", 2);
             bodyMap.put("content", "你好");
             // 3. 生成16进制字符串
-            String hexStr = DynamicWebSocketBinaryEncoder.encodeToHex(
+            String hexStr = DynamicWebSocketBinaryEncoderUtil.encodeToHex(
                     command, version, messageType, clientType, appId, deviceId, bodyMap
             );
 

@@ -11,7 +11,7 @@ import org.gz.imcommon.enums.MessageCommandEnum;
 import org.gz.imcommon.enums.SystemCommandEnum;
 import org.gz.imserver.proto.Message;
 import org.gz.imserver.proto.MessageResponse;
-import org.gz.imserver.utils.SessionSocketHolder;
+import org.gz.imserver.netty.SessionSocketHolder;
 
 
 /**
