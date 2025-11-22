@@ -18,7 +18,8 @@ public class WebSocketMessageDecoder extends MessageToMessageDecoder<BinaryWebSo
     protected void decode(ChannelHandlerContext ctx, BinaryWebSocketFrame msg, List<Object> out)  {
 
         ByteBuf content = msg.content();
-        if (content.readableBytes() < 28) {
+        int readableBytes = content.readableBytes();
+        if (readableBytes < 28) {
             return;
         }
         Message message = ByteBufToMessageUtils.transition(content);

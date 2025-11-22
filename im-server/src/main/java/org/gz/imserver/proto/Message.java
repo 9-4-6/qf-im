@@ -11,13 +11,16 @@ public class Message {
 
     private MessageHeader messageHeader;
 
-    private Object messagePack;
+    private String deviceId;
+
+    private Object messageBody;
 
     @Override
     public String toString() {
         return "Message{" +
                 "messageHeader=" + messageHeader +
-                ", messagePack=" + messagePack +
+                "deviceId=" + deviceId +
+                ", messageBody=" + messageBody +
                 '}';
     }
 }

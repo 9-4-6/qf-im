@@ -44,7 +44,8 @@ public class ByteBufToMessageUtils {
         // bodyLen 消息体长度
         int bodyLen = in.readInt();
         //为了防止半包问题
-        if(in.readableBytes() < bodyLen + deviceIdLength){
+        int readableBytes = in.readableBytes();
+        if(readableBytes < bodyLen + deviceIdLength){
             //长度不够，等等下一次读取
             in.resetReaderIndex();
             return null;
@@ -65,15 +66,18 @@ public class ByteBufToMessageUtils {
         messageHeader.setLength(bodyLen);
         messageHeader.setVersion(version);
         messageHeader.setMessageType(messageType);
-        messageHeader.setDeviceId(deviceId);
-
+        messageHeader.setDeviceIdLength(deviceIdLength);
+        messageHeader.setLength(bodyLen);
         Message message = new Message();
+        //请求头
         message.setMessageHeader(messageHeader);
-
+        //请求唯一标识
+        message.setDeviceId(deviceId);
+        //请求体
         if(messageType == 0){
             String body = new String(bodyData);
             JSONObject parse =JSONUtil.parseObj(body);
-            message.setMessagePack(parse);
+            message.setMessageBody(parse);
         }
         //标记读取位置
         in.markReaderIndex();

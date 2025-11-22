@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.gz.imcommon.enums.MessageCommandEnum;
 import org.gz.imcommon.enums.SystemCommandEnum;
 import org.gz.imserver.proto.Message;
-import org.gz.imserver.proto.MessagePack;
+import org.gz.imserver.proto.MessageResponse;
 import org.gz.imserver.utils.SessionSocketHolder;
 
 
@@ -26,29 +26,33 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
      * 当ChannelPipeline中前面的解码器（如自定义的ByteBufToMessageDecoder）将ByteBuf解析为Message对象后，会触发此方法
      */
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Message msg)  {
         String clientAddress = ctx.channel().remoteAddress().toString();
         log.info("收到客户端[{}]的消息：{}", clientAddress, msg);
 
         int command = msg.getMessageHeader().getCommand();
         log.info("消息命令为：{}，开始处理业务逻辑", command);
-        JSONObject jsonObject = JSONUtil.parseObj(msg.getMessagePack());
+        JSONObject jsonObject = JSONUtil.parseObj(msg.getMessageBody());
         if(command == SystemCommandEnum.LOGIN.getCommand()){
             //登录
-            Long userId = jsonObject.getLong("userId");
-            MessagePack<Long> loginSuccess = new MessagePack<>();
-            loginSuccess.setCommand(SystemCommandEnum.LOGIN_ACK.getCommand());
-            loginSuccess.setData(userId);
-            ctx.channel().writeAndFlush(loginSuccess);
+            Long userId = jsonObject.getLong("fromId");
+            MessageResponse<Long> msgR = new MessageResponse<>();
+            msgR.setCommand(SystemCommandEnum.LOGIN_ACK.getCommand());
+            msgR.setData(userId);
+            ctx.channel().writeAndFlush(msgR);
             SessionSocketHolder.put(userId,ctx.channel());
         }else if(command == MessageCommandEnum.MSG_P2P.getCommand()){
             //单聊
             //接收人
             Long toId = jsonObject.getLong("toId");
             //消息内容
-            Long content = jsonObject.getLong("content");
+            String content = jsonObject.getStr("content");
+            log.info("消息内容为：{}", content);
+            MessageResponse<String> msgR = new MessageResponse<>();
+            msgR.setCommand(MessageCommandEnum.MSG_ACK.getCommand());
+            msgR.setData(content);
             Channel channel = SessionSocketHolder.get(toId);
-            channel.writeAndFlush(content);
+            channel.writeAndFlush(msgR);
         }
 
     }
@@ -57,7 +61,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
      * 处理用户事件（非I/O事件），常见场景：心跳检测（IdleStateEvent）、连接状态变更等
      */
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
 
     }
 
@@ -66,7 +70,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
      * 若不重写此方法，默认会关闭channel
      */
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         String clientAddress = ctx.channel().remoteAddress().toString();
         // 打印异常信息（包含客户端地址，便于定位问题）
         log.error("客户端[{}]发生异常，原因：", clientAddress, cause);
