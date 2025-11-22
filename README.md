@@ -28,3 +28,6 @@
 | **im-biz**     | 业务服务    |
 | **im-server**  | netty服务 |
                    
+## 测试
+![img.png](request.png)
+![img_1.png](console.png)
