@@ -1,23 +1,17 @@
 package org.gz.imserver.config;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.gz.imserver.netty.ChatServer;
+import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-/**
- * @author guozhong
- * @date 2025/11/18
- */
-@Data
-@Component
-@ConfigurationProperties(prefix = "netty.server")
+@Configuration
 public class NettyConfig {
-    // tcp 绑定的端口号
-    private Integer tcpPort;
-    // boss线程 默认=1
-    private Integer bossThreadSize;
-    //work线程
-    private Integer workThreadSize;
-    //心跳超时时间 单位毫秒
-    private Long heartBeatTime;
+    /**
+     * 将 ChatServer 注册为 Spring Bean，注入 NettyConfig 和 RocketmqProducer
+     */
+    @Bean
+    public ChatServer chatServer(NettyProperties nettyProperties,  RocketmqProducer rocketmqProducer) {
+        return new ChatServer(nettyProperties, rocketmqProducer);
+    }
 }
