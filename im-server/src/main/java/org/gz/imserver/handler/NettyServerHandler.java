@@ -64,7 +64,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
 
             //发送消息
             rocketmqProducer.sendSyncMessage(
-                    "im-chat",
+                    "${rocketmq.topic}",
                     null,
                     null,
                     content,

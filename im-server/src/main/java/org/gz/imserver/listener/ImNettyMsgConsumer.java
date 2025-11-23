@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RocketMQMessageListener(
-        consumerGroup = "im_producer_group",
-        topic = "im-chat",
+        consumerGroup = "${rocketmq.consumer.group}",
+        topic = "${rocketmq.topic}",
         selectorExpression = "#{T(org.gz.imserver.manager.NacosInstanceComponent).getInstanceId()}",
         messageModel = MessageModel.CLUSTERING
 )

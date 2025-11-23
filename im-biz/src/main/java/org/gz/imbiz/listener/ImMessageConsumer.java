@@ -6,7 +6,7 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@RocketMQMessageListener(consumerGroup = "im_producer_group", topic = "im-chat")
+@RocketMQMessageListener(consumerGroup = "${rocketmq.consumer.group}", topic = "${rocketmq.topic}")
 @Slf4j
 public class ImMessageConsumer implements RocketMQListener<String> {
     @Override
