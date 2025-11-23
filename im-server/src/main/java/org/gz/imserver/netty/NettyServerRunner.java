@@ -2,7 +2,6 @@ package org.gz.imserver.netty;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.gz.imserver.config.NettyConfig;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,16 +14,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class NettyServerRunner implements CommandLineRunner , DisposableBean {
 
-
     @Resource
-    private NettyConfig nettyConfig;
-
     private ChatServer chatServer;
 
     @Override
     public void run(String... args) {
-        // 启动 Netty 服务
-        chatServer = new ChatServer(nettyConfig);
         chatServer.start();
     }
 

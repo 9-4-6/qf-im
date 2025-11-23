@@ -1,4 +1,4 @@
-package org.gz.imserver.Listener;
+package org.gz.imserver.listener;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;

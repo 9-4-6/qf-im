@@ -12,6 +12,7 @@ import org.gz.imcommon.enums.SystemCommandEnum;
 import org.gz.imserver.proto.Message;
 import org.gz.imserver.proto.MessageResponse;
 import org.gz.imserver.netty.SessionSocketHolder;
+import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
 
 
 /**
@@ -19,7 +20,13 @@ import org.gz.imserver.netty.SessionSocketHolder;
  */
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
+    // 保存 RocketmqProducer 实例
+    private final RocketmqProducer rocketmqProducer;
 
+    // 构造器注入 RocketmqProducer
+    public NettyServerHandler(RocketmqProducer rocketmqProducer) {
+        this.rocketmqProducer = rocketmqProducer;
+    }
 
     /**
      * 核心方法：处理客户端发送的消息（已解码为Message对象）
@@ -41,6 +48,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             msgR.setData(userId);
             ctx.channel().writeAndFlush(msgR);
             SessionSocketHolder.put(userId,ctx.channel());
+
         }else if(command == MessageCommandEnum.MSG_P2P.getCommand()){
             //单聊
             //接收人
@@ -53,6 +61,20 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             msgR.setData(content);
             Channel channel = SessionSocketHolder.get(toId);
             channel.writeAndFlush(msgR);
+
+            //发送消息
+            rocketmqProducer.sendSyncMessage(
+                    "${spring.rocketmq.consumer.topics.imChat}",
+                    null,
+                    null,
+                    content,
+                    (msgContent, topic, tags, keys, ex, sendResult) -> {
+                            // 异常日志
+                            log.error("发送消息异常 | topic={}, tags={}, keys={},msg={}",
+                                    msgContent, topic, tags, keys, ex);
+
+                    }
+            );
         }
 
     }

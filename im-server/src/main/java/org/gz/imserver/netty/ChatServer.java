@@ -12,9 +12,10 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.gz.imserver.codec.WebSocketMessageDecoder;
 import org.gz.imserver.codec.WebSocketMessageEncoder;
-import org.gz.imserver.config.NettyConfig;
+import org.gz.imserver.config.NettyProperties;
 import org.gz.imserver.handler.NettyServerHandler;
 import org.gz.qfinfra.exception.BizException;
+import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
 
 /**
  * @author guozhong
@@ -22,27 +23,29 @@ import org.gz.qfinfra.exception.BizException;
  */
 @Slf4j
 public class ChatServer {
-    private final NettyConfig nettyConfig;
+    private final RocketmqProducer rocketmqProducer;
+    private final NettyProperties nettyProperties;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private Channel serverChannel;
     private volatile boolean isRunning = false;
 
     // 注入配置
-    public ChatServer(NettyConfig nettyConfig) {
-        this.nettyConfig = nettyConfig;
+    public ChatServer(NettyProperties nettyProperties,RocketmqProducer rocketmqProducer) {
+        this.nettyProperties = nettyProperties;
+        this.rocketmqProducer = rocketmqProducer;
         validateConfig(); // 校验配置
     }
 
     // 初始化并启动 Netty 服务
     public void start() {
         if (isRunning) {
-            log.warn("Netty 服务已启动，端口：{}", nettyConfig.getTcpPort());
+            log.warn("Netty 服务已启动，端口：{}", nettyProperties.getTcpPort());
             return;
         }
 
-        bossGroup = new NioEventLoopGroup(nettyConfig.getBossThreadSize());
-        workerGroup = new NioEventLoopGroup(nettyConfig.getWorkThreadSize());
+        bossGroup = new NioEventLoopGroup(nettyProperties.getBossThreadSize());
+        workerGroup = new NioEventLoopGroup(nettyProperties.getWorkThreadSize());
 
         try {
             ServerBootstrap bootstrap = new ServerBootstrap()
@@ -69,16 +72,16 @@ public class ChatServer {
                             pipeline.addLast(new WebSocketServerProtocolHandler("/chat"));
                             pipeline.addLast(new WebSocketMessageDecoder());
                             pipeline.addLast(new WebSocketMessageEncoder());
-                            pipeline.addLast(new NettyServerHandler());
+                            pipeline.addLast(new NettyServerHandler(rocketmqProducer));
                         }
                     });
 
 
             // 绑定端口并同步等待
-            ChannelFuture future = bootstrap.bind(nettyConfig.getTcpPort()).sync();
+            ChannelFuture future = bootstrap.bind(nettyProperties.getTcpPort()).sync();
             serverChannel = future.channel();
             isRunning = true;
-            log.info("Netty 服务启动成功，端口：{}", nettyConfig.getTcpPort());
+            log.info("Netty 服务启动成功，端口：{}", nettyProperties.getTcpPort());
 
             // 监听服务关闭事件
             serverChannel.closeFuture().addListener(f -> {
@@ -112,7 +115,7 @@ public class ChatServer {
 
     // 校验配置合法性
     private void validateConfig() {
-        int port = nettyConfig.getTcpPort();
+        int port = nettyProperties.getTcpPort();
         if (port < 1 || port > 65535) {
             throw new BizException("无效的 Netty 端口：" + port);
         }
