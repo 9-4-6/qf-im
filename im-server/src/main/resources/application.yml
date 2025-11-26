@@ -2,7 +2,9 @@ spring:
   application:
     name: im-server
   config:
-    import: optional:nacos:im-server.yml
+    import:
+      - optional:nacos:common.yml
+      - optional:nacos:im-server.yml
   cloud:
     nacos:
       discovery:

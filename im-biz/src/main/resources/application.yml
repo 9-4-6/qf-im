@@ -2,7 +2,9 @@ spring:
   application:
     name: im-biz
   config:
-    import: optional:nacos:im-biz.yml
+    import:
+      - optional:nacos:common.yml
+      - optional:nacos:im-biz.yml
   cloud:
     nacos:
       discovery:
