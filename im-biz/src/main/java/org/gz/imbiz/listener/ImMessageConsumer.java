@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * @author 17853
+ */
 @Component
 @RocketMQMessageListener(consumerGroup = "${rocketmq.consumer.group}",
         topic = "${rocketmq.consumer.topic}",
