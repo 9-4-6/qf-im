@@ -13,6 +13,7 @@ import org.gz.imserver.proto.Message;
 import org.gz.imserver.proto.MessageResponse;
 import org.gz.imserver.netty.SessionSocketHolder;
 import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
+import org.springframework.beans.factory.annotation.Value;
 
 
 /**
@@ -20,6 +21,9 @@ import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
  */
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
+
+    @Value("${rocketmq.topic:im-chat}")
+    private String topic;
     // 保存 RocketmqProducer 实例
     private final RocketmqProducer rocketmqProducer;
 
@@ -64,7 +68,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
 
             //发送消息
             rocketmqProducer.sendSyncMessage(
-                    "${rocketmq.topic}",
+                    topic,
                     null,
                     null,
                     content,

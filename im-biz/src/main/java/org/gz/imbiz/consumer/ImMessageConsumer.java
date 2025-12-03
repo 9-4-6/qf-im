@@ -1,11 +1,13 @@
-package org.gz.imbiz.consumer;
+package org.gz.imbiz.listener;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.annotation.MessageModel;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
-import org.gz.qfinfra.exception.BizException;
 import org.springframework.stereotype.Component;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author 17853
@@ -16,11 +18,12 @@ import org.springframework.stereotype.Component;
         maxReconsumeTimes = 3,
         messageModel = MessageModel.CLUSTERING)
 @Slf4j
-public class ImMessageConsumer implements RocketMQListener<String> {
+public class ImMessageConsumer implements RocketMQListener<MessageExt> {
     @Override
-    public void onMessage(String msg) {
-        log.info("接受到消息:{}",msg);
-        throw new BizException("消费失败");
+    public void onMessage(MessageExt msg) {
+        log.info("接受到消息:{}",new String(msg.getBody(), StandardCharsets.UTF_8));
+
+        throw new RuntimeException("失败");
 
     }
 }
