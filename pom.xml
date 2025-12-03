@@ -12,6 +12,7 @@
         <module>im-common</module>
         <module>im-server</module>
         <module>im-biz</module>
+        <module>im-task</module>
     </modules>
     <properties>
         <java.version>17</java.version>

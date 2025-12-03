@@ -1,9 +1,10 @@
-package org.gz.imbiz.listener;
+package org.gz.imbiz.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.MessageModel;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.gz.qfinfra.exception.BizException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,6 +20,7 @@ public class ImMessageConsumer implements RocketMQListener<String> {
     @Override
     public void onMessage(String msg) {
         log.info("接受到消息:{}",msg);
+        throw new BizException("消费失败");
 
     }
 }
