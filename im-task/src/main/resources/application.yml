@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: im-task
+  config:
+    import:
+      - optional:nacos:common.yml
+      - optional:nacos:im-task.yml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.0.107:8848
+        namespace: 16ca64e6-6fa9-42c7-92bb-1fed442b17de
+      config:
+        server-addr: 192.168.0.107:8848
+        file-extension: yml
+        namespace: 16ca64e6-6fa9-42c7-92bb-1fed442b17de
