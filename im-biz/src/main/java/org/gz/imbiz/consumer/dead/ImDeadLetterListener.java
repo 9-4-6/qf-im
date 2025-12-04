@@ -7,6 +7,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.gz.qfinfra.exception.BizException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -28,14 +29,12 @@ public class ImDeadLetterListener {
             for (MessageExt msg : msgs) {
                 try {
                     // 你的业务处理逻辑
-                    String body = new String(msg.getBody());
-                    log.info("收到死信消息: {}", body);
+                    log.info("收到死信消息: {}", new String(msg.getBody()));
                     // 业务处理逻辑
                     handleDeadLetter(msg);
                 } catch (Exception e) {
                     // 处理失败，稍后重试
-                    log.error("处理死信失败", e);
-                    return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                    log.info("处理死信失败: {}", new String(msg.getBody()),e);
                 }
             }
             // 处理成功，确认消费
