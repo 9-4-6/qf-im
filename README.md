@@ -25,8 +25,6 @@
 | **im-server** | netty服务 |
 | **im-task**   | 定时任务服务  |
 
-## 功能特性
-支持自定义二进制序列化与protobuf序列化
                    
 ## 测试
 ![img.png](request.png)
