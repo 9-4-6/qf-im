@@ -24,6 +24,9 @@
 | **im-biz**    | 业务服务    |
 | **im-server** | netty服务 |
 | **im-task**   | 定时任务服务  |
+
+## 功能特性
+支持二进制与protobuf序列化
                    
 ## 测试
 ![img.png](request.png)
