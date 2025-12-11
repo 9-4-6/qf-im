@@ -26,7 +26,7 @@
 | **im-task**   | 定时任务服务  |
 
 ## 功能特性
-支持二进制与protobuf序列化
+支持自定义二进制序列化与protobuf序列化
                    
 ## 测试
 ![img.png](request.png)
