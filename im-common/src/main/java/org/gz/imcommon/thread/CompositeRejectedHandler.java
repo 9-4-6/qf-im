@@ -15,31 +15,12 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 方案4 再次把任务放到线程池再次执行
  *
  *
+ * @author 17853
  */
 public class CompositeRejectedHandler implements RejectedExecutionHandler {
-    private final RejectedExecutionHandler primaryHandler = new ThreadPoolExecutor.CallerRunsPolicy();
     @Override
     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-
-        // 当系统负载低于70%时，使用主策略（调用者执行）
-        if (getSystemLoad() < 0.7) {
-            primaryHandler.rejectedExecution(r, executor);
-        } else {
-            // todo 当系统负载过高（≥70%）时，使用备用策略（自定义丢弃/持久化）
-
-        }
+        r.run();
     }
-    // 获取当前系统CPU负载
-    private double getSystemLoad() {
-        try {
-            OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(
-                    OperatingSystemMXBean.class
-            );
-            return osBean.getCpuLoad();
-        } catch (Exception e) {
-            // 如果获取CPU负载失败，默认返回高负载
-            System.err.println("获取CPU负载失败: " + e.getMessage());
-            return 1.0; // 返回高负载
-        }
-    }
+
 }

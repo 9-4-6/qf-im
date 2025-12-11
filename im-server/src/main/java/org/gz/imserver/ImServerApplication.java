@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableScheduling
 public class ImServerApplication {
 
     public static void main(String[] args) {
