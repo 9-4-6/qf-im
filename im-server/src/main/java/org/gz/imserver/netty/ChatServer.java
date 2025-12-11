@@ -14,6 +14,7 @@ import org.gz.imserver.codec.WebSocketMessageDecoder;
 import org.gz.imserver.codec.WebSocketMessageEncoder;
 import org.gz.imserver.config.NettyProperties;
 import org.gz.imserver.handler.NettyServerHandler;
+import org.gz.imserver.manager.UserInstanceBindComponent;
 import org.gz.qfinfra.exception.BizException;
 import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
 
@@ -24,6 +25,7 @@ import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
 @Slf4j
 public class ChatServer {
     private final RocketmqProducer rocketmqProducer;
+    private final UserInstanceBindComponent userInstanceBindComponent;
     private final NettyProperties nettyProperties;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
@@ -31,9 +33,10 @@ public class ChatServer {
     private volatile boolean isRunning = false;
 
     // 注入配置
-    public ChatServer(NettyProperties nettyProperties,RocketmqProducer rocketmqProducer) {
+    public ChatServer(NettyProperties nettyProperties,RocketmqProducer rocketmqProducer,UserInstanceBindComponent userInstanceBindComponent) {
         this.nettyProperties = nettyProperties;
         this.rocketmqProducer = rocketmqProducer;
+        this.userInstanceBindComponent = userInstanceBindComponent;
         validateConfig(); // 校验配置
     }
 
@@ -72,7 +75,7 @@ public class ChatServer {
                             pipeline.addLast(new WebSocketServerProtocolHandler("/chat"));
                             pipeline.addLast(new WebSocketMessageDecoder());
                             pipeline.addLast(new WebSocketMessageEncoder());
-                            pipeline.addLast(new NettyServerHandler(rocketmqProducer));
+                            pipeline.addLast(new NettyServerHandler(rocketmqProducer,userInstanceBindComponent));
                         }
                     });
 

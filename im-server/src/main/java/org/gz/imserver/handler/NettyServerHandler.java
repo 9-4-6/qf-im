@@ -9,11 +9,11 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.gz.imcommon.enums.MessageCommandEnum;
 import org.gz.imcommon.enums.SystemCommandEnum;
+import org.gz.imserver.manager.UserInstanceBindComponent;
 import org.gz.imserver.proto.Message;
 import org.gz.imserver.proto.MessageResponse;
 import org.gz.imserver.netty.SessionSocketHolder;
 import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
-import org.springframework.beans.factory.annotation.Value;
 
 
 /**
@@ -22,14 +22,12 @@ import org.springframework.beans.factory.annotation.Value;
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
 
-    @Value("${rocketmq.topic:im-chat}")
-    private String topic;
-    // 保存 RocketmqProducer 实例
     private final RocketmqProducer rocketmqProducer;
+    private final UserInstanceBindComponent userInstanceBindComponent;
 
-    // 构造器注入 RocketmqProducer
-    public NettyServerHandler(RocketmqProducer rocketmqProducer) {
+    public NettyServerHandler(RocketmqProducer rocketmqProducer, UserInstanceBindComponent userInstanceBindComponent) {
         this.rocketmqProducer = rocketmqProducer;
+        this.userInstanceBindComponent = userInstanceBindComponent;
     }
 
     /**
@@ -52,6 +50,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             msgR.setData(userId);
             ctx.channel().writeAndFlush(msgR);
             SessionSocketHolder.put(userId,ctx.channel());
+            //绑定当前实例id与用户
+            userInstanceBindComponent.bindUser(userId);
 
         }else if(command == MessageCommandEnum.MSG_P2P.getCommand()){
             //单聊
@@ -68,7 +68,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
 
             //发送消息
             rocketmqProducer.sendSyncMessage(
-                    topic,
+                    "im-chat",
                     null,
                     null,
                     content,
@@ -102,7 +102,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
         log.error("客户端[{}]发生异常，原因：", clientAddress, cause);
 
         // 异常处理策略：根据异常类型决定是否关闭连接
-        // 示例：网络异常直接关闭，业务异常可返回错误响应后关闭
         ctx.close();
     }
 

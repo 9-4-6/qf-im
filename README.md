@@ -4,9 +4,7 @@
 [![JDK](https://img.shields.io/badge/JDK-17-green.svg)]()  
 [![Netty](https://img.shields.io/badge/Netty-4.x-blue.svg)]()  
 [![RocketMQ](https://img.shields.io/badge/RocketMQ-5.0-orange.svg)]()  
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-blue.svg)]()  
 [![Redis](https://img.shields.io/badge/Redis-7.0-red.svg)]()  
-[![Elasticsearch](https://img.shields.io/badge/Elasticsearch-8.x-yellow.svg)]()
 
 ## 技术栈
 

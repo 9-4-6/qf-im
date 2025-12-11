@@ -6,4 +6,6 @@ package org.gz.imcommon.constants;
  * @description redis 常量
  */
 public class RedisConstant {
+    public static final String USER_INSTANCE_HASH_KEY = "user-instance";
+
 }
