@@ -24,12 +24,15 @@ import org.gz.imserver.netty.SessionSocketHolder;
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
 
-    private final RocketMQTemplate rocketMqTemplate;
+    private final RocketMQTemplate rocketMqImTemplate;
     private final UserInstanceBindComponent userInstanceBindComponent;
 
-    public NettyServerHandler(RocketMQTemplate rocketMqTemplate, UserInstanceBindComponent userInstanceBindComponent) {
-        this.rocketMqTemplate = rocketMqTemplate;
+    private final Integer brokerId;
+
+    public NettyServerHandler(RocketMQTemplate rocketMqImTemplate, UserInstanceBindComponent userInstanceBindComponent, Integer brokerId) {
+        this.rocketMqImTemplate = rocketMqImTemplate;
         this.userInstanceBindComponent = userInstanceBindComponent;
+        this.brokerId = brokerId;
     }
 
     /**
@@ -53,7 +56,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             ctx.channel().writeAndFlush(msgR);
             SessionSocketHolder.put(userId,ctx.channel());
             //绑定当前实例id与用户
-            userInstanceBindComponent.bindUser(userId);
+            userInstanceBindComponent.bindUser(userId,brokerId);
 
         }else if(command == MessageCommandEnum.MSG_P2P.getCommand()){
             //接收人
@@ -67,7 +70,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             Channel channel = SessionSocketHolder.get(toId);
             channel.writeAndFlush(msgR);
             //发送消息
-            rocketMqTemplate.asyncSend("im-chat", content, new SendCallback() {
+            rocketMqImTemplate.asyncSend("im-chat", jsonObject, new SendCallback() {
                 public void onSuccess(SendResult r) {}
                 public void onException(Throwable e) {
                     log.error("发送失败: {}", "im-chat", e);

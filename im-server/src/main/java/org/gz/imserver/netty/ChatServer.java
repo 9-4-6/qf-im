@@ -10,12 +10,14 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.gz.imcommon.exception.BizException;
 import org.gz.imserver.codec.WebSocketMessageDecoder;
 import org.gz.imserver.codec.WebSocketMessageEncoder;
 import org.gz.imserver.config.NettyProperties;
 import org.gz.imserver.handler.NettyServerHandler;
+import org.gz.imserver.listener.MessageReceiver;
 import org.gz.imserver.manager.UserInstanceBindComponent;
 
 /**
@@ -24,7 +26,7 @@ import org.gz.imserver.manager.UserInstanceBindComponent;
  */
 @Slf4j
 public class ChatServer {
-    private final RocketMQTemplate rocketMqTemplate;
+    private final RocketMQTemplate rocketMqImTemplate;
     private final UserInstanceBindComponent userInstanceBindComponent;
     private final NettyProperties nettyProperties;
     private EventLoopGroup bossGroup;
@@ -33,15 +35,22 @@ public class ChatServer {
     private volatile boolean isRunning = false;
 
     // 注入配置
-    public ChatServer(NettyProperties nettyProperties,RocketMQTemplate rocketMqTemplate,UserInstanceBindComponent userInstanceBindComponent) {
+    public ChatServer(NettyProperties nettyProperties,RocketMQTemplate rocketMqImTemplate,UserInstanceBindComponent userInstanceBindComponent) {
         this.nettyProperties = nettyProperties;
-        this.rocketMqTemplate = rocketMqTemplate;
+        this.rocketMqImTemplate = rocketMqImTemplate;
         this.userInstanceBindComponent = userInstanceBindComponent;
-        validateConfig(); // 校验配置
+        // 校验配置
+        validateConfig();
+    }
+
+    public void init() throws MQClientException {
+        this.start();
+        MessageReceiver.init(nettyProperties.getBrokerId());
+
     }
 
     // 初始化并启动 Netty 服务
-    public void start() {
+    private void start() {
         if (isRunning) {
             log.warn("Netty 服务已启动，端口：{}", nettyProperties.getTcpPort());
             return;
@@ -75,7 +84,9 @@ public class ChatServer {
                             pipeline.addLast(new WebSocketServerProtocolHandler("/chat"));
                             pipeline.addLast(new WebSocketMessageDecoder());
                             pipeline.addLast(new WebSocketMessageEncoder());
-                            pipeline.addLast(new NettyServerHandler(rocketMqTemplate,userInstanceBindComponent));
+                            pipeline.addLast(new NettyServerHandler(rocketMqImTemplate,
+                                                                    userInstanceBindComponent,
+                                    nettyProperties.getBrokerId()));
                         }
                     });
 
