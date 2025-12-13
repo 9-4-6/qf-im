@@ -7,13 +7,15 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.gz.imcommon.enums.MessageCommandEnum;
 import org.gz.imcommon.enums.SystemCommandEnum;
 import org.gz.imserver.manager.UserInstanceBindComponent;
 import org.gz.imserver.proto.Message;
 import org.gz.imserver.proto.MessageResponse;
 import org.gz.imserver.netty.SessionSocketHolder;
-import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
 
 
 /**
@@ -22,11 +24,11 @@ import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
 
-    private final RocketmqProducer rocketmqProducer;
+    private final RocketMQTemplate rocketMqTemplate;
     private final UserInstanceBindComponent userInstanceBindComponent;
 
-    public NettyServerHandler(RocketmqProducer rocketmqProducer, UserInstanceBindComponent userInstanceBindComponent) {
-        this.rocketmqProducer = rocketmqProducer;
+    public NettyServerHandler(RocketMQTemplate rocketMqTemplate, UserInstanceBindComponent userInstanceBindComponent) {
+        this.rocketMqTemplate = rocketMqTemplate;
         this.userInstanceBindComponent = userInstanceBindComponent;
     }
 
@@ -54,7 +56,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             userInstanceBindComponent.bindUser(userId);
 
         }else if(command == MessageCommandEnum.MSG_P2P.getCommand()){
-            //单聊
             //接收人
             Long toId = jsonObject.getLong("toId");
             //消息内容
@@ -65,20 +66,13 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             msgR.setData(content);
             Channel channel = SessionSocketHolder.get(toId);
             channel.writeAndFlush(msgR);
-
             //发送消息
-            rocketmqProducer.sendSyncMessage(
-                    "im-chat",
-                    null,
-                    null,
-                    content,
-                    (msgContent, topic, tags, keys, ex, sendResult) -> {
-                            // 异常日志
-                            log.error("发送消息异常 | topic={}, tags={}, keys={},msg={}",
-                                    msgContent, topic, tags, keys, ex);
-
-                    }
-            );
+            rocketMqTemplate.asyncSend("im-chat", content, new SendCallback() {
+                public void onSuccess(SendResult r) {}
+                public void onException(Throwable e) {
+                    log.error("发送失败: {}", "im-chat", e);
+                }
+            });
         }
 
     }

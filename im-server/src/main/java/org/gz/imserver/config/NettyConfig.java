@@ -1,8 +1,8 @@
 package org.gz.imserver.config;
 
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.gz.imserver.manager.UserInstanceBindComponent;
 import org.gz.imserver.netty.ChatServer;
-import org.gz.qfinfra.rocketmq.producer.RocketmqProducer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 public class NettyConfig {
 
     @Bean
-    public ChatServer chatServer(NettyProperties nettyProperties, RocketmqProducer rocketmqProducer,
+    public ChatServer chatServer(NettyProperties nettyProperties, RocketMQTemplate rocketMqTemplate,
                                  UserInstanceBindComponent userInstanceBindComponent) {
-        return new ChatServer(nettyProperties, rocketmqProducer,userInstanceBindComponent);
+        return new ChatServer(nettyProperties, rocketMqTemplate,userInstanceBindComponent);
     }
 }
