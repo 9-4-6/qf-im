@@ -2,6 +2,7 @@ package org.gz.imserver.netty;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.exception.MQClientException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -18,8 +19,8 @@ public class NettyServerRunner implements CommandLineRunner , DisposableBean {
     private ChatServer chatServer;
 
     @Override
-    public void run(String... args) {
-        chatServer.start();
+    public void run(String... args) throws MQClientException {
+        chatServer.init();
     }
 
     @Override

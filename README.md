@@ -25,6 +25,9 @@
 | **im-server** | netty服务 |
 | **im-task**   | 定时任务服务  |
 
+## 可靠性
+
+![img.png](img.png)
                    
 ## 测试
 ![img.png](request.png)

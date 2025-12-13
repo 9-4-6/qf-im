@@ -20,4 +20,6 @@ public class NettyProperties {
     private Integer workThreadSize;
     //心跳超时时间 单位毫秒
     private Long heartBeatTime;
+
+    private Integer brokerId;
 }

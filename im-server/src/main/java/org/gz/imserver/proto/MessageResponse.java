@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Data
 public class MessageResponse<T> implements Serializable {
     private int command;
+
     private T data;
 
 }

@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.gz</groupId>
-    <artifactId>qf-im</artifactId>
+    <artifactId>qf-im-chat</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>qf-im</name>
-    <description>qf-im</description>
+    <name>qf-im-chat</name>
+    <description>qf-im-chat</description>
     <packaging>pom</packaging>
     <modules>
         <module>im-common</module>
@@ -24,13 +24,15 @@
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <lombok.version>1.18.36</lombok.version>
         <mybatisplus.version>3.5.8</mybatisplus.version>
+        <rocketmq-spring-boot-starter.version>2.3.2</rocketmq-spring-boot-starter.version>
+
     </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.gz</groupId>
-                <artifactId>qf-infra-spring-boot-starter</artifactId>
-                <version>${qf-infra.version}</version>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq-spring-boot-starter.version}</version>
             </dependency>
             <!-- 引入Spring Cloud Alibaba依赖管理，统一管理其下大部分组件的版本 -->
             <dependency>

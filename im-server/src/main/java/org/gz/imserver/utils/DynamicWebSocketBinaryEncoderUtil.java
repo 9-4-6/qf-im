@@ -92,7 +92,7 @@ public class DynamicWebSocketBinaryEncoderUtil {
             Map<String, Object> bodyMap = new HashMap<>();
             bodyMap.put("fromId", 1);
             bodyMap.put("toId", 2);
-            bodyMap.put("content", "你好");
+            bodyMap.put("content", "你好B,我是A");
             // 3. 生成16进制字符串
             String hexStr = DynamicWebSocketBinaryEncoderUtil.encodeToHex(
                     command, version, messageType, clientType, appId, deviceId, bodyMap
