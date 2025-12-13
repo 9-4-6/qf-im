@@ -30,9 +30,8 @@ import org.springframework.stereotype.Component;
 public class ImMessageConsumer implements RocketMQListener<String> {
     @Resource
     private RedissonClient redissonClient;
-    @Autowired
-    @Qualifier("rocketMqImTemplate123")
-    private RocketMQTemplate rocketMqImTemplate123;
+    @Resource
+    private RocketMQTemplate rocketMqImTemplate;
 
     @Override
     public void onMessage(String msg) {
@@ -43,7 +42,7 @@ public class ImMessageConsumer implements RocketMQListener<String> {
         String brokeId = userInstanceHash.get(userId);
         //发送消息
         String destination = MqConstant.IM_CHAT_SINGLE + brokeId;
-        rocketMqImTemplate123.asyncSend(destination, content, new SendCallback() {
+        rocketMqImTemplate.asyncSend(destination, content, new SendCallback() {
             public void onSuccess(SendResult r) {}
             public void onException(Throwable e) {
                 log.error("发送失败: {}", destination, e);

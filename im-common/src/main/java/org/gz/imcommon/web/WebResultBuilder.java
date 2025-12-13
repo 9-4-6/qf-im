@@ -1,8 +1,5 @@
 package org.gz.imcommon.web;
 
-import org.gz.qfinfra.web.WebResult;
-import org.gz.qfinfra.web.WebResultEnum;
-
 /**
  * @author guozhong
  * @date 2025/11/15
