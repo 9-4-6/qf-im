@@ -8,14 +8,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Import;
 
 /**
  * @author 17853
  */
 @Configuration
 @DependsOn("rocketMqImTemplate")
-@Import({RocketMqConfig.class})
 public class NettyConfig {
 
     @Bean

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
+        "org.gz.imbiz",
         "org.gz.imcommon"
 })
 public class ImBizApplication {
