@@ -1,4 +1,4 @@
-# QF-IM 💬
+# QF-IM-CHAT 💬
 **强的飞起** - 基于现代技术栈构建的高性能、可扩展的IM通讯
 
 [![JDK](https://img.shields.io/badge/JDK-17-green.svg)]()  
