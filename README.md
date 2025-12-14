@@ -25,9 +25,17 @@
 | **im-server** | netty服务 |
 | **im-task**   | 定时任务服务  |
 
+## 高性能
+
+自定义二进制websocket协议
+
 ## 可靠性
 
 ![img.png](img.png)
+
+## 有序性
+
+消息中间件保证有序性
                    
 ## 测试
 ![img.png](request.png)

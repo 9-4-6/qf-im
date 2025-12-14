@@ -41,7 +41,9 @@ public class ImMessageConsumer implements RocketMQListener<String> {
         //发送消息
         String destination = MqConstant.IM_CHAT_SINGLE + brokeId;
         rocketMqImTemplate.asyncSend(destination, content, new SendCallback() {
+            @Override
             public void onSuccess(SendResult r) {}
+            @Override
             public void onException(Throwable e) {
                 log.error("发送失败: {}", destination, e);
             }

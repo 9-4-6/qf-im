@@ -71,7 +71,9 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             channel.writeAndFlush(msgR);
             //发送消息
             rocketMqImTemplate.asyncSend("im-chat", jsonObject, new SendCallback() {
+                @Override
                 public void onSuccess(SendResult r) {}
+                @Override
                 public void onException(Throwable e) {
                     log.error("发送失败: {}", "im-chat", e);
                 }
