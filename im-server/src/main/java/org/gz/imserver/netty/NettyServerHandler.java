@@ -1,4 +1,4 @@
-package org.gz.imserver.handler;
+package org.gz.imserver.netty;
 
 
 import cn.hutool.json.JSONObject;
@@ -15,24 +15,26 @@ import org.gz.imcommon.enums.SystemCommandEnum;
 import org.gz.imserver.manager.UserInstanceBindComponent;
 import org.gz.imserver.proto.Message;
 import org.gz.imserver.proto.MessageResponse;
-import org.gz.imserver.netty.SessionSocketHolder;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 
 /**
  * @author guozhong
  */
 @Slf4j
+@Component
 public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
 
     private final RocketMQTemplate rocketMqImTemplate;
     private final UserInstanceBindComponent userInstanceBindComponent;
-
-    private final Integer brokerId;
-
-    public NettyServerHandler(RocketMQTemplate rocketMqImTemplate, UserInstanceBindComponent userInstanceBindComponent, Integer brokerId) {
+    @Value("${netty.server.brokerId}")
+    private  Integer brokerId;
+    public NettyServerHandler(@Qualifier("rocketMqImTemplate") RocketMQTemplate rocketMqImTemplate,
+                              UserInstanceBindComponent userInstanceBindComponent) {
         this.rocketMqImTemplate = rocketMqImTemplate;
         this.userInstanceBindComponent = userInstanceBindComponent;
-        this.brokerId = brokerId;
     }
 
     /**

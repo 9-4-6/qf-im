@@ -1,8 +1,8 @@
 package org.gz.imserver.netty;
 
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.exception.MQClientException;
+import org.gz.imserver.listener.MessageReceiver;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,12 +15,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class NettyServerRunner implements CommandLineRunner , DisposableBean {
 
-    @Resource
-    private ChatServer chatServer;
+    private final ChatServer chatServer;
+    private final MessageReceiver messageReceiver;
+    public NettyServerRunner(ChatServer chatServer){
+        this.chatServer = chatServer;
+        this.messageReceiver = new MessageReceiver();
+    }
 
     @Override
     public void run(String... args) throws MQClientException {
         chatServer.init();
+        messageReceiver.init();
     }
 
     @Override
